@@ -1,13 +1,13 @@
 ﻿
 Mini Golf Game Challenge
-Game Content:
-Each level includes:
+<br />Game Content:
+<br />Each level includes:
 Ball based on a starting position
 Walls – represented by 2d lines.
 Muddy areas - represented by a collection of brown rectangles.
 Hole – Positioned anywhere on the field.
-You can design the levels as you wish to make a fun game.
-Game Core Mechanics:
+You can design the levels as you wish to make a fun game.<br />
+<br />Game Core Mechanics:
 The game has 2 levels.
 Each level is auto generate, each time we run the game we will meet randomly new level.
 The game is 3D with top down view.
@@ -19,9 +19,10 @@ The user will move to the next level if he puts the ball in the hole or if he pr
 HUD
 Number of strokes counter (number of time the ball was hit by the player) will be counted and shown on screen.
 Current level number.
-General
+<br />General<br />
 Physics should FEEL realistic with de-acceleration etc…
 Game should be fun (an odd request it seems, but it is one of the major things in game dev)
 Example Layout
 
-https://cloud.githubusercontent.com/assets/5079800/25084298/fe7d85c6-2385-11e7-8140-65acac412666.png
+![zzz](https://cloud.githubusercontent.com/assets/5079800/25084298/fe7d85c6-2385-11e7-8140-65acac412666.png)
+#
