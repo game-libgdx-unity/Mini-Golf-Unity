@@ -1,4 +1,4 @@
-
+﻿
 Mini Golf Game Challenge
 Game Content:
 Each level includes:
@@ -23,3 +23,5 @@ General
 Physics should FEEL realistic with de-acceleration etc…
 Game should be fun (an odd request it seems, but it is one of the major things in game dev)
 Example Layout
+
+https://cloud.githubusercontent.com/assets/5079800/25084298/fe7d85c6-2385-11e7-8140-65acac412666.png
