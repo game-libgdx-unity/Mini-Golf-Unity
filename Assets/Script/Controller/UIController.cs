@@ -3,7 +3,6 @@ using System.Collections;
 using UnityEngine.UI;
 using System;
 using UnityEngine.Events;
-using DG.Tweening;
 
 public class UIController : MonoBehaviour
 {
@@ -29,13 +28,14 @@ public class UIController : MonoBehaviour
     void Start()
     {
         darkBG = GameObject.Find("Dark");
-        DOVirtual.DelayedCall(1f, () => //get the game started after 1s
-        {
-            darkBG.SetActive(false);
-            GameStatus = "Your Turn";
-        });
+        StartCoroutine(FadeIn(.5f));
     }
-
+    IEnumerator FadeIn(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        darkBG.SetActive(false);
+        GameStatus = "Your Turn";
+    }
     #endregion
 
     #region Public Members

@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class Mud : MonoBehaviour {
+public class Mud : MonoBehaviour
+{
 
     #region Fields
 
@@ -12,7 +13,7 @@ public class Mud : MonoBehaviour {
     #region Initialization
 
     void Start()
-    { 
+    {
         rigidBody = GameObject.FindGameObjectWithTag("Player").GetComponent<Rigidbody>();
     }
 
@@ -30,7 +31,8 @@ public class Mud : MonoBehaviour {
         if (collision.gameObject.tag.Equals("Player"))
         {
             print("OnCollisionEnter");
-            rigidBody.angularDrag = 20;
+            if (rigidBody)
+                rigidBody.angularDrag = 20;
         }
 
 
@@ -40,7 +42,8 @@ public class Mud : MonoBehaviour {
     {
         if (collision.gameObject.tag.Equals("Player"))
         {
-            rigidBody.angularDrag = 3;
+            if (rigidBody)
+                rigidBody.angularDrag = 3;
         }
     }
 

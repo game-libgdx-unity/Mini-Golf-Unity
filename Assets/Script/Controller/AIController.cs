@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using DG.Tweening;
 using System;
 using System.Collections.Generic;
 
@@ -31,7 +30,7 @@ public class AIController : MonoBehaviour
     [SerializeField]
     private float jump = 30;
     private Rigidbody rigidBody;
-    
+
     #endregion
 
     #region Initialization
@@ -61,6 +60,8 @@ public class AIController : MonoBehaviour
     #region Public Members
 
     public Action<AIState> Status_Changed;
+    private bool hit;
+    private float hitThreshold = 2f;
 
     public AIState Status
     {
@@ -79,26 +80,29 @@ public class AIController : MonoBehaviour
 
                 if (status == AIState.Thinking)
                 {
-                    DOVirtual.DelayedCall(1f, () => //AI takes 1s to think the next move
-                    {
-                        Status = AIState.AIControlling;
-                        if (CanDirectHitGoal)
-                        {
-                            print("Great");
-                            PerformDirectHit();
-                        }
-                        else
-                        {
-                            print("Do AI");
-                            MoveBallToNearestBlankPoint();
-                        }
-                        if (ball.OnHitStarted != null)
-                        {
-                            ball.OnHitStarted();
-                        }
-                    });
+                    StartCoroutine(AIThinkingRoutine(1f));
                 }
             }
+        }
+    }
+
+    IEnumerator AIThinkingRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Status = AIState.AIControlling;
+        if (CanDirectHitGoal)
+        {
+            print("Great");
+            PerformDirectHit();
+        }
+        else
+        {
+            print("Do AI");
+            MoveBallToNearestBlankPoint();
+        }
+        if (ball.OnHitStarted != null)
+        {
+            ball.OnHitStarted();
         }
     }
 
@@ -116,19 +120,76 @@ public class AIController : MonoBehaviour
     private void MoveTheBall(Vector3 target)
     {
         Vector3 direction = target - transform.position;
-        rigidBody.AddForce(direction.normalized * direction.magnitude * POWER_HIT + Vector3.up * POWER_HIT_UP);
+        rigidBody.AddForce(direction.normalized * direction.magnitude * POWER_HIT + Vector3.up * ball.JumpForce);
     }
 
     private void PerformDirectHit()
     {
         if (GameController.Level == 2) // Perfect AI at level 2
         {
-            transform.DOJump(Vector3.zero, 30, 1, 2).OnComplete(() => Status = AIState.AIWin);
+            StartCoroutine(ProjectileRoutine());
         }
         else
         {
             MoveTheBall(Vector3.zero); //dumb AI at level 1
         }
+    }
+
+    IEnumerator ProjectileRoutine()
+    {
+        //make sure the ball is facing the target
+        Vector3 targetPos = Vector3.zero;
+        ball.transform.LookAt(targetPos);
+        //some properties for hitting the ball
+        Transform ballT = ball.transform;
+        float maxShootRange = 70;
+        float maxShootAngle = 60;
+        float speed = 20;
+        float angle = Mathf.Min(1, Vector3.Distance(ballT.position, targetPos) / maxShootRange) * maxShootAngle;
+        ballT.rotation = ballT.rotation * Quaternion.Euler(-angle, 0, 0);
+
+        Vector3 startPos = ballT.position;
+        float iniRotX = ballT.rotation.eulerAngles.x;
+
+        float y = Mathf.Min(targetPos.y, startPos.y);
+        float totalDist = Vector3.Distance(startPos, targetPos);
+
+        //while the ball havent hit the target
+        while (!hit)
+        {
+            //calculating distance to targetPos
+            Vector3 curPos = ballT.position;
+            //curPos.y = y;
+            float currentDist = Vector3.Distance(curPos, targetPos);
+            //if the target is close enough, trigger a hit
+            if (currentDist < hitThreshold && !hit)
+            {
+                print(" Hit()");
+                ball.gameObject.SetActive(false);
+                hit = true;
+                Status = AIState.AIWin;
+                break;
+            }
+
+            //calculate ratio of distance covered to total distance
+            float invR = 1 - Mathf.Min(1, currentDist / totalDist);
+
+            //use the distance information to set the rotation, as the projectile approach target, it will aim straight at the target
+            Vector3 wantedDir = targetPos - ballT.position;
+            if (wantedDir != Vector3.zero)
+            {
+                Quaternion wantedRotation = Quaternion.LookRotation(wantedDir);
+                float rotX = Mathf.LerpAngle(iniRotX, wantedRotation.eulerAngles.x, invR);
+
+                //make y-rotation always face target
+                ballT.rotation = Quaternion.Euler(rotX, wantedRotation.eulerAngles.y, wantedRotation.eulerAngles.z);
+            }
+
+            //move forward
+            ballT.Translate(Vector3.forward * Mathf.Min(speed * Time.deltaTime, currentDist));
+
+            yield return null;
+        } 
     }
 
     private Vector3 FindNearestBlankPosition()
@@ -167,6 +228,6 @@ public class AIController : MonoBehaviour
         }
 
     }
-    
+
     #endregion
 }

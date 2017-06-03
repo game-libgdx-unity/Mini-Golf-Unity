@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 using System.Collections;
-using DG.Tweening;
 using System;
 
 public class BallController : MonoBehaviour
@@ -52,6 +51,19 @@ public class BallController : MonoBehaviour
         }
     }
 
+    public int JumpForce
+    {
+        get
+        {
+            return jump;
+        }
+
+        set
+        {
+            jump = value;
+        }
+    }
+
     #endregion
 
     #region Private Members
@@ -77,7 +89,7 @@ public class BallController : MonoBehaviour
             {
                 isMouseDown = false;
                 Vector3 power = (positions[0] - positions[1]);
-                power.y = jump;
+                power.y = JumpForce;
                 rigidBody.AddForce(power * speed);
                 positions[0] = -1000 * Vector3.one;
                 positions[1] = -1000 * Vector3.one;
