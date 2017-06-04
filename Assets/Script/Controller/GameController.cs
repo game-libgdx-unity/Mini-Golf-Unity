@@ -121,11 +121,15 @@ public class GameController : MonoBehaviour
     {
         goal.OnGameFinished = () =>
         {
-            if (ai.Status == AIState.PlayerControlling)
+            if (ai.Status == AIState.AIControlling)
             {
-                ai.Status = AIState.PlayerWin;
-                ball.gameObject.SetActive(false);
+                ai.Status = AIState.AIWin;
             }
+            else if (ai.Status == AIState.PlayerControlling)
+            {
+                ai.Status = AIState.PlayerWin; 
+            }
+            ball.gameObject.SetActive(false);
         };
     }
 
