@@ -18,7 +18,7 @@ public class AIController : MonoBehaviour
     #region 
 
     private const int POWER_HIT = 40;
-    private const int POWER_HIT_UP = 1500;
+    private const int POWER_HIT_UP = 1000;
 
     [SerializeField]
     private Transform goal;
@@ -80,7 +80,7 @@ public class AIController : MonoBehaviour
 
                 if (status == AIState.Thinking)
                 {
-                    StartCoroutine(AIThinkingRoutine(1f));
+                    StartCoroutine(AIThinkingRoutine(.5f));
                 }
             }
         }
@@ -120,7 +120,7 @@ public class AIController : MonoBehaviour
     private void MoveTheBall(Vector3 target)
     {
         Vector3 direction = target - transform.position;
-        rigidBody.AddForce(direction.normalized * direction.magnitude * POWER_HIT + Vector3.up * ball.JumpForce);
+        rigidBody.AddForce(direction.normalized * direction.magnitude * POWER_HIT + Vector3.up * POWER_HIT_UP);
     }
 
     private void PerformDirectHit()

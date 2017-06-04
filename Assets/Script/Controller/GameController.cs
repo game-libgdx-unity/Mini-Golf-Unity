@@ -43,7 +43,7 @@ public class GameController : MonoBehaviour
     private void InitializeAI()
     {
         ai = ball.GetComponent<AIController>();
-        ai.Status_Changed += (s) =>
+        ai.Status_Changed = (s) =>
         {
             if (s == AIState.AIControlling)
             {
@@ -80,11 +80,20 @@ public class GameController : MonoBehaviour
         ball.OnStopped = () =>
         {
             print("OnStopped");
-            if (ai.Status == AIState.PlayerControlling)
-                ai.Status = AIState.Thinking;
-
-            if (ai.Status == AIState.AIControlling)
-                ai.Status = AIState.PlayerControlling;
+            if (Vector3.Distance(ball.transform.position, Vector3.zero) > .5f)
+            {
+                if (ai.Status == AIState.PlayerControlling)
+                    ai.Status = AIState.Thinking;
+                else if (ai.Status == AIState.AIControlling)
+                    ai.Status = AIState.PlayerControlling;
+            }
+            else
+            {
+                if (ai.Status == AIState.PlayerControlling)
+                    ai.Status = AIState.PlayerWin;
+                else if (ai.Status == AIState.AIControlling)
+                    ai.Status = AIState.AIWin;
+            }
         };
         ball.OnHitStarted = () =>
         {

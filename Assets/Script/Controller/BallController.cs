@@ -104,7 +104,7 @@ public class BallController : MonoBehaviour
     {
         if (IsMoving)
         {
-            if (rigidBody.velocity.magnitude > 0.01f && rigidBody.velocity.magnitude < .1f)
+            if (rigidBody.velocity.magnitude > 0.005f && rigidBody.velocity.magnitude < .01f)
             {
                 IsMoving = false;
                 rigidBody.angularVelocity = Vector3.zero;
