@@ -10,6 +10,8 @@ public class BallController : MonoBehaviour
     private int speed = 50;
     [SerializeField]
     private int jump = 100;
+    [SerializeField]
+    private float ball_hit_threshold = .5f;
 
     private Rigidbody rigidBody;
     private LineRenderer lineRenderer;
@@ -88,14 +90,17 @@ public class BallController : MonoBehaviour
             if (Input.GetMouseButtonUp(0))
             {
                 isMouseDown = false;
-                Vector3 power = (positions[0] - positions[1]);
-                power.y = JumpForce;
-                rigidBody.AddForce(power * speed);
+                if (Vector2.Distance(new Vector2(positions[0].x, positions[0].z), new Vector2(positions[1].x, positions[1].z)) > ball_hit_threshold) //if player pull the ball powerful enough. 
+                {
+                    Vector3 power = (positions[0] - positions[1]);
+                    power.y = JumpForce;
+                    rigidBody.AddForce(power * speed); 
+                    if (OnHitStarted != null)
+                        OnHitStarted();
+                }
                 positions[0] = -1000 * Vector3.one;
                 positions[1] = -1000 * Vector3.one;
                 lineRenderer.SetPositions(positions);
-                if (OnHitStarted != null)
-                    OnHitStarted();
             }
         }
     }
